@@ -9,6 +9,8 @@ services:
             MONGO_INITDB_DATABASE: '${DB_DATABASE}'
         volumes:
             - .//volumes/mongodb/data:/data/db
+        ports:
+            - 27017:27017
 
     mongo-express:
         image: mongo-express
@@ -19,7 +21,3 @@ services:
             ME_CONFIG_MONGODB_ADMINPASSWORD: '${DB_PASSWORD}'
         depends_on:
             - mongo
-
-volumes:
-    sailmongodb:
-        driver: local

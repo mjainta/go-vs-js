@@ -18,6 +18,7 @@ Javascript: [nest.js](https://nestjs.com/)
 
 To init we had to:
 ```bash
+# Follow https://gin-gonic.com/docs/quickstart/ and use the curl command to get the main.go
 go mod init github.com/mjainta/go-vs-js
 go get github.com/gin-gonic/gin
 go build main.go
@@ -25,3 +26,9 @@ go run main.go
 ```
 
 Then we can visit [localhost:8080/ping](localhost:8080/ping).
+
+## Using mongodb
+
+```bash
+go get go.mongodb.org/mongo-driver/mongo
+```
