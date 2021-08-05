@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,9 +15,12 @@ func setupRouter() *gin.Engine {
 
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
-		var documents = getAllDocuments()
-		fmt.Printf("Found multiple documents (array of pointers): %+v\n", documents)
+		c.String(http.StatusOK, "pong")
+	})
 
+	// Return documents
+	r.GET("/getDocuments", func(c *gin.Context) {
+		var documents = getAllDocuments()
 		c.JSON(http.StatusOK, gin.H{"documents": documents})
 	})
 
