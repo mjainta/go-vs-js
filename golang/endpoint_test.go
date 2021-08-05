@@ -30,15 +30,12 @@ func setupDb(fixture []doc) {
 	}
 
 	collection := client.Database(dbName).Collection(collName)
-	for i, entry := range fixture {
-		res, err := collection.InsertOne(ctx, entry)
+	for _, entry := range fixture {
+		_, err := collection.InsertOne(ctx, entry)
 
 		if err != nil {
 			panic(err)
 		}
-		
-		id := res.InsertedID
-		fmt.Println(i, id)
 	}
 }
 
@@ -91,10 +88,48 @@ func TestDocumentsRoute(t *testing.T) {
 	}
 	json.Unmarshal([]byte(w.Body.String()), &actResult)
 
-	if cmp.Equal(actResult, expResult) {
-		fmt.Println("EQUAL")
-	} else {
-		fmt.Println("NOT EQUAL")
+	if ! cmp.Equal(actResult, expResult) {
+		fmt.Println("actResult", actResult)
+		fmt.Println("expResult", expResult)
+		t.Errorf("Result not equal to expected results")
+	}
+
+	assert.Equal(t, 200, w.Code)
+}
+
+func TestDocumentsFilteredRoute(t *testing.T) {
+	router := setupRouter()
+	var fixture = []doc {
+		{
+			ID: primitive.NewObjectID(),
+			Name: "John Doe",
+		},
+		{
+			ID: primitive.NewObjectID(),
+			Name: "John Bar",
+		},
+		{
+			ID: primitive.NewObjectID(),
+			Name: "Luise Bar",
+		},
+	}
+	setupDb(fixture)
+	defer cleanupDb()
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/documents/Bar", nil)
+	router.ServeHTTP(w, req)
+
+	var actResult docResponse
+	var expResult = docResponse {
+		Documents: fixture[1:3],
+	}
+	json.Unmarshal([]byte(w.Body.String()), &actResult)
+
+	if ! cmp.Equal(actResult, expResult) {
+		fmt.Println("actResult", actResult)
+		fmt.Println("expResult", expResult)
+		t.Errorf("Result not equal to expected results")
 	}
 
 	assert.Equal(t, 200, w.Code)

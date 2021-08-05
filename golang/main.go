@@ -25,6 +25,13 @@ func setupRouter() *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"documents": documents})
 	})
 
+	// Return filtered documents
+	r.GET("/documents/:name", func(c *gin.Context) {
+		name := c.Params.ByName("name")
+		var documents = getFilteredDocuments(name)
+		c.JSON(http.StatusOK, gin.H{"documents": documents})
+	})
+
 	// Get user value
 	r.GET("/user/:name", func(c *gin.Context) {
 		user := c.Params.ByName("name")

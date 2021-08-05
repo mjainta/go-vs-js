@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -43,7 +44,6 @@ func getAllDocuments() []*doc {
 	var client, ctx = connect()
 	defer disconnect(client, ctx)
 
-
 	var dbName = os.Getenv("DB_NAME")
 	var collName = os.Getenv("DB_COLL")
 	// Get the collection documents iterate through them
@@ -65,6 +65,42 @@ func getAllDocuments() []*doc {
 		}
 
 		fmt.Println(elem)
+		documents = append(documents, &elem)
+	}
+
+	fmt.Printf("Found multiple documents (array of pointers): %+v\n", documents)
+	return documents
+}
+
+func getFilteredDocuments(name string) []*doc {
+	var documents []*doc
+	var client, ctx = connect()
+	defer disconnect(client, ctx)
+
+	var dbName = os.Getenv("DB_NAME")
+	var collName = os.Getenv("DB_COLL")
+	// Get the collection documents iterate through them
+	collection := client.Database(dbName).Collection(collName)
+	var filter = fmt.Sprintf(".*%s.*", name)
+	cur, err := collection.Find(ctx, bson.M{"name": bson.M{"$regex": primitive.Regex{
+		Pattern: filter,
+		Options: "i",
+	}}})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var elem doc
+		err := cur.Decode(&elem)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		documents = append(documents, &elem)
 	}
 
