@@ -1,28 +1,24 @@
 package main
 
 import (
+	"os"
 	"context"
 	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type doc struct {
-	ID 		primitive.ObjectID `bson:"_id"`
-	Name 	string						 `bson:"name"`
-}
 
 func connect() (*mongo.Client, context.Context) {
 
-	// Replace the uri string with your MongoDB deployment's connection string.
-	uri := "mongodb://admin:foobar@localhost"
+	var dbUri = os.Getenv("DB_URI")
+
 	ctx := context.TODO()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbUri))
 
 	if err != nil {
 		panic(err)
@@ -47,8 +43,11 @@ func getAllDocuments() []*doc {
 	var client, ctx = connect()
 	defer disconnect(client, ctx)
 
+
+	var dbName = os.Getenv("DB_NAME")
+	var collName = os.Getenv("DB_COLL")
 	// Get the collection documents iterate through them
-	collection := client.Database("mydatabase").Collection("mycoll")
+	collection := client.Database(dbName).Collection(collName)
 	cur, err := collection.Find(ctx, bson.D{})
 
 	if err != nil {
