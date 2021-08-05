@@ -19,7 +19,7 @@ func setupRouter() *gin.Engine {
 	})
 
 	// Return documents
-	r.GET("/getDocuments", func(c *gin.Context) {
+	r.GET("/documents", func(c *gin.Context) {
 		var documents = getAllDocuments()
 		c.JSON(http.StatusOK, gin.H{"documents": documents})
 	})

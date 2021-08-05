@@ -9,7 +9,7 @@ Javascript: [nest.js](https://nestjs.com/)
 
 ## Requirements
 
-* One REST call to `localhost:<port>/getDocuments`.
+* One REST call to `localhost:<port>/documents`.
 * Without any parameter, will return all documents in the database `mydatabase` and collection `mycoll`.
 * with an optional parameter `name`, the endpoint will filter for documents where the value of the attribute `name` is LIKE the parameter value.
 * The REST endpoint should be tested using the frameworks testing method.
