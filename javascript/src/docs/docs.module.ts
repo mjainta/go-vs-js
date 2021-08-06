@@ -5,7 +5,9 @@ import { DocsService } from './docs.service';
 import { Doc, DocSchema } from '../schemas/doc.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Doc.name, schema: DocSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: Doc.name, schema: DocSchema }]),
+  ],
   controllers: [DocsController],
   providers: [DocsService],
 })

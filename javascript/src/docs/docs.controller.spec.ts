@@ -20,5 +20,7 @@ describe('DocsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(controller.getAllDocuments).toBeDefined();
+    expect(controller.getFilteredDocuments).toBeDefined();
   });
 });
