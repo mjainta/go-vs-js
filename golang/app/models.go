@@ -10,3 +10,8 @@ type doc struct {
 type docResponse struct {
 	Documents []doc `json:"documents"`
 }
+
+type docFilter struct {
+	Type	string
+	Value	string
+}

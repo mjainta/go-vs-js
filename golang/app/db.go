@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -38,7 +39,20 @@ func disconnect(client *mongo.Client, ctx context.Context) {
 	client.Disconnect(ctx)
 }
 
-func getDocuments(filter bson.M) []*doc {
+func getDocuments(filter docFilter) []*doc {
+	var queryFilter = bson.M{}
+
+	if filter.Type == "name" {
+		queryFilter = bson.M{
+			"name": bson.M{
+				"$regex": primitive.Regex{
+					Pattern: fmt.Sprintf("%s", filter.Value),
+					Options: "i",
+				},
+			},
+		}
+	}
+
 	var documents []*doc
 	var client, ctx = connect()
 	defer disconnect(client, ctx)
@@ -47,7 +61,7 @@ func getDocuments(filter bson.M) []*doc {
 	var collName = os.Getenv("DB_COLL")
 	// Get the collection documents iterate through them
 	collection := client.Database(dbName).Collection(collName)
-	cur, err := collection.Find(ctx, filter)
+	cur, err := collection.Find(ctx, queryFilter)
 
 	if err != nil {
 		log.Fatal(err)
