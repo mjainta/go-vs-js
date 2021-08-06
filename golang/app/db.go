@@ -81,7 +81,7 @@ func getFilteredDocuments(name string) []*doc {
 	var collName = os.Getenv("DB_COLL")
 	// Get the collection documents iterate through them
 	collection := client.Database(dbName).Collection(collName)
-	var filter = fmt.Sprintf(".*%s.*", name)
+	var filter = fmt.Sprintf("%s", name)
 	cur, err := collection.Find(ctx, bson.M{"name": bson.M{"$regex": primitive.Regex{
 		Pattern: filter,
 		Options: "i",
