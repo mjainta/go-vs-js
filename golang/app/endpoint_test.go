@@ -17,6 +17,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+
+// Setup a collection for the test
 func setupDb(fixture []doc) {
 	var dbUri = os.Getenv("DB_URI")
 	var dbName = os.Getenv("DB_NAME")
@@ -39,6 +41,7 @@ func setupDb(fixture []doc) {
 	}
 }
 
+// Truncate the collection
 func cleanupDb() {
 	var dbUri = os.Getenv("DB_URI")
 	var dbName = os.Getenv("DB_NAME")
@@ -59,78 +62,64 @@ func cleanupDb() {
 	}
 }
 
-func TestDocumentsRoute(t *testing.T) {
-	router := SetupRouter()
-	var fixture = []doc {
-		{
-			ID: primitive.NewObjectID(),
-			Name: "John Doe",
-		},
-		{
-			ID: primitive.NewObjectID(),
-			Name: "John Bar",
-		},
-		{
-			ID: primitive.NewObjectID(),
-			Name: "Luise Bar",
-		},
-	}
-	setupDb(fixture)
-	defer cleanupDb()
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/documents", nil)
-	router.ServeHTTP(w, req)
-
-	var actResult docResponse
-	var expResult = docResponse {
-		Documents: fixture,
-	}
-	json.Unmarshal([]byte(w.Body.String()), &actResult)
-
-	if ! cmp.Equal(actResult, expResult) {
-		fmt.Println("actResult", actResult)
-		fmt.Println("expResult", expResult)
-		t.Errorf("Result not equal to expected results")
-	}
-
-	assert.Equal(t, 200, w.Code)
+// Fixture
+var fixture = []doc {
+	{
+		ID: primitive.NewObjectID(),
+		Name: "John Doe",
+	},
+	{
+		ID: primitive.NewObjectID(),
+		Name: "John Bar",
+	},
+	{
+		ID: primitive.NewObjectID(),
+		Name: "Luise Bar",
+	},
 }
 
-func TestDocumentsFilteredRoute(t *testing.T) {
-	router := SetupRouter()
-	var fixture = []doc {
-		{
-			ID: primitive.NewObjectID(),
-			Name: "John Doe",
-		},
-		{
-			ID: primitive.NewObjectID(),
-			Name: "John Bar",
-		},
-		{
-			ID: primitive.NewObjectID(),
-			Name: "Luise Bar",
-		},
+// Test setup for the /documents route
+var documentTests = []struct {
+	in  string
+	out []doc
+}{
+	{"/documents", fixture},
+	{"/documents/Bar", fixture[1:3]},
+	{"/documents/bar", fixture[1:3]},
+	{"/documents/Luise", fixture[2:3]},
+	{"/documents/john", fixture[0:2]},
+}
+
+func TestDocumentsRoute(t *testing.T) {
+
+	for _, tt := range documentTests {
+		// Setup fixture
+		router := SetupRouter()
+		setupDb(fixture)
+
+		// Test
+		t.Run(tt.in, func(t *testing.T) {
+			w := httptest.NewRecorder()
+			req, _ := http.NewRequest("GET", tt.in, nil)
+			router.ServeHTTP(w, req)
+
+			// Assertions
+			var actResult docResponse
+			var expResult = docResponse {
+				Documents: tt.out,
+			}
+			json.Unmarshal([]byte(w.Body.String()), &actResult)
+
+			if ! cmp.Equal(actResult, expResult) {
+				fmt.Println("actResult", actResult)
+				fmt.Println("expResult", expResult)
+				t.Errorf("Result not equal to expected results")
+			}
+
+			assert.Equal(t, 200, w.Code)
+		})
+
+		// Cleanup
+		cleanupDb()
 	}
-	setupDb(fixture)
-	defer cleanupDb()
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/documents/Bar", nil)
-	router.ServeHTTP(w, req)
-
-	var actResult docResponse
-	var expResult = docResponse {
-		Documents: fixture[1:3],
-	}
-	json.Unmarshal([]byte(w.Body.String()), &actResult)
-
-	if ! cmp.Equal(actResult, expResult) {
-		fmt.Println("actResult", actResult)
-		fmt.Println("expResult", expResult)
-		t.Errorf("Result not equal to expected results")
-	}
-
-	assert.Equal(t, 200, w.Code)
 }
