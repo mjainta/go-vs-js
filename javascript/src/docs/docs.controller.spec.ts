@@ -10,7 +10,7 @@ describe('DocsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [MongooseModule.forFeature([{ name: Doc.name, schema: DocSchema }]),
-      MongooseModule.forRoot('mongodb://localhost/mydatabase')],
+      MongooseModule.forRoot('mongodb://localhost/test_database')],
       controllers: [DocsController],
       providers: [DocsService],
     }).compile();

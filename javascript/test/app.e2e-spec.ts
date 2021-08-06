@@ -21,4 +21,11 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('Hello World!');
   });
+
+  it('/documents (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/documents')
+      .expect(200)
+      .expect('[{"_id":"61097a12f064fd0007ba1c18","name":"this is my first name"},{"_id":"61097a19f064fd0007ba1c1a","name":"this is my second name"},{"_id":"61097a22f064fd0007ba1c1c","name":"and my last name"}]');
+  });
 });

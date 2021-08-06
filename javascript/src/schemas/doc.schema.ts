@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type DocDocument = Doc & Document;
 
-@Schema({collection: "mycoll"}) // The collection is called "mycoll"
+@Schema({collection: "docs"}) // The collection is called "docs"
 export class Doc {
   @Prop()
   name: string;
