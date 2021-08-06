@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -60,7 +60,7 @@ func cleanupDb() {
 }
 
 func TestDocumentsRoute(t *testing.T) {
-	router := setupRouter()
+	router := SetupRouter()
 	var fixture = []doc {
 		{
 			ID: primitive.NewObjectID(),
@@ -98,7 +98,7 @@ func TestDocumentsRoute(t *testing.T) {
 }
 
 func TestDocumentsFilteredRoute(t *testing.T) {
-	router := setupRouter()
+	router := SetupRouter()
 	var fixture = []doc {
 		{
 			ID: primitive.NewObjectID(),
