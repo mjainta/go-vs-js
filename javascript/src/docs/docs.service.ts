@@ -10,4 +10,12 @@ export class DocsService {
   async findAll(): Promise<Doc[]> {
     return this.docModel.find().exec();
   }
+
+  async findFiltered(name: string): Promise<Doc[]> {
+    return this.docModel.find({
+      name: {
+        $regex: name
+      }
+    }).exec();
+  }
 }
