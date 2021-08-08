@@ -2,14 +2,14 @@ const app = require("../app.js");
 const supertest = require("supertest");
 const { MongoClient } = require('mongodb')
 
-const url = 'mongodb://admin:foobar@localhost'
+const url = process.env.DB_URI
 const client = new MongoClient(url)
-const dbName = 'test_database'
+const dbName = process.env.DB_NAME
 
 beforeEach(async () => {
   await client.connect()
   const db = client.db(dbName)
-  const collection = db.collection('test_coll')
+  const collection = db.collection(process.env.DB_COLL)
   await collection.deleteMany({})
   await collection.insertMany([
     {
@@ -30,7 +30,7 @@ beforeEach(async () => {
 afterEach(async () => {
   await client.connect()
   const db = client.db(dbName)
-  const collection = db.collection('test_coll')
+  const collection = db.collection(process.env.DB_COLL)
   await collection.deleteMany({})
 });
 
