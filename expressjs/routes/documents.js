@@ -14,6 +14,7 @@ router.get('/', async function(req, res, next) {
   const db = client.db(dbName)
   const collection = db.collection(process.env.DB_COLL)
   const findResult = await collection.find({}).toArray()
+  await client.close()
 
   res.send(findResult);
 });

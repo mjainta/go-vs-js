@@ -25,6 +25,7 @@ beforeEach(async () => {
       "name": "name2",
     },
   ])
+  await client.close()
 });
 
 afterEach(async () => {
@@ -32,6 +33,7 @@ afterEach(async () => {
   const db = client.db(dbName)
   const collection = db.collection(process.env.DB_COLL)
   await collection.deleteMany({})
+  await client.close()
 });
 
 it('Testing to see if Jest works', () => {
