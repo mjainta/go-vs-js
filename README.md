@@ -5,7 +5,8 @@ We want to try out a simple example using the Gin (Go) and Nest.js (Javascript) 
 ## Frameworks
 
 - [gin](https://gin-gonic.com/)
-- [nest.js](https://nestjs.com/)
+- ~~[nest.js](https://nestjs.com/)~~
+- [express.js](http://expressjs.com/)
 
 ## Requirements
 
@@ -14,7 +15,7 @@ We want to try out a simple example using the Gin (Go) and Nest.js (Javascript) 
 * with an optional parameter `name`, the endpoint will filter for documents where the value of the attribute `name` is LIKE the parameter value.
 * The REST endpoint should be tested using the frameworks testing method.
 
-## Golang
+# Gin (Golang)
 
 To init we had to:
 ```bash
@@ -33,4 +34,16 @@ Then we can visit [localhost:8080/ping](localhost:8080/ping).
 
 ```bash
 go get go.mongodb.org/mongo-driver/mongo
+```
+
+# ExpressJs (JS)
+
+To init we had to:
+```bash
+# Follow http://expressjs.com/en/starter/generator.html to get the application skeleton
+yarn install
+# Runs the app
+yarn start
+# Starts unittests
+yarn test
 ```
